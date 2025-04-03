@@ -4,4 +4,41 @@ html, body {
 }
 canvas {
   display: block;
+  z-index: 2; /* Sit on bottom */
+}
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 800px;
+    height: 400px;
+    background-color: rgba(0, 0, 0, 0.5); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: rgb(255,255,255);
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Button Styles */
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #ddd;
 }
