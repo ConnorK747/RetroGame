@@ -44,20 +44,43 @@ function setup() {
   // Build ground with variable platform and hole sizes
   let levelLength = 5000;
   let x = 0;
-  while (x < levelLength) {
-    let groundWidth = random(200, 400);
-    let holeWidth = random(60, 120);
-    groundSections.push(new Platform(x, height - 20, groundWidth, 20));
-    x += groundWidth + holeWidth;
-  }
+  // while (x < levelLength) {
+  //   let groundWidth = random(200, 400);
+  //   let holeWidth = random(60, 120);
+  //   groundSections.push(new Platform(x, height - 20, groundWidth, 20));
+  //   x += groundWidth + holeWidth;
+  // }
 
   // Floating platforms
-  platforms.push(new Platform(600, 280, 100, 10));
-  platforms.push(new Platform(1000, 240, 100, 10));
-  platforms.push(new Platform(1600, 200, 100, 10));
-  platforms.push(new Platform(2200, 160, 100, 10));
-  platforms.push(new Platform(3000, 300, 100, 10));
-  platforms.push(new Platform(3000, 300, 100, 10));
+platforms.push(new Platform(488, 341, 128, 33));
+platforms.push(new Platform(-11, 370, 453, 33));
+platforms.push(new Platform(3644, 370, 1422, 33));
+platforms.push(new Platform(663, 256, 234, 33));
+platforms.push(new Platform(723, 142, 142, 33));
+platforms.push(new Platform(897, 341, 84, 33));
+platforms.push(new Platform(981, 231, 139, 33));
+platforms.push(new Platform(1120, 109, 203, 33));
+platforms.push(new Platform(1403, 374, 113, 33));
+platforms.push(new Platform(1662, 374, 140, 33));
+platforms.push(new Platform(1834, 374, 140, 33));
+platforms.push(new Platform(1974, 261, 82, 33));
+platforms.push(new Platform(2143, 175, 170, 26));
+platforms.push(new Platform(2936, 205, 227, 26));
+platforms.push(new Platform(2764, 315, 112, 26));
+platforms.push(new Platform(3193, 374, 81, 26));
+platforms.push(new Platform(3274, 261, 117, 26));
+platforms.push(new Platform(3446, 260, 117, 26));
+platforms.push(new Platform(3446, 260, 117, 26));
+platforms.push(new Platform(3901, 260, 168, 114));
+platforms.push(new Platform(3954, 201, 115, 59));
+platforms.push(new Platform(1686, 142, 116, 33));
+platforms.push(new Platform(1546, 175, 87, 12));
+platforms.push(new Platform(2425, 231, 87, 12));
+platforms.push(new Platform(2655, 261, 87, 12));
+platforms.push(new Platform(3697, 176, 87, 12));
+platforms.push(new Platform(4011, 145, 58, 59));
+platforms.push(new Platform(4299, 72, 19, 304));
+
 
   // Add moving platforms
   platforms.push(new Platform(1500, 250, 100, 10, 2, 200));  // Moves horizontally with speed 2 and range 200px
