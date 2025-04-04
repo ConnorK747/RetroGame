@@ -9,13 +9,54 @@ let enemies = [];
 let startTime;
 let timeTaken = 0;  // Time taken to complete the level (in milliseconds)
 let levelCompleted = false; // To track if the level is completed
+let coinsCollected
+let coinPositions = [
+ {x: 758.0,  y: 120.0},  
+ {x: 783.0,  y: 120.0},  
+ {x: 808.0,  y: 120.0},  
+ {x: 1040.0, y: 68.0},  
+ {x: 1065.0, y: 68.0}, 
+ {x: 928.0,  y: 319.0},  
+ {x: 1403.0, y: 179.0},  
+ {x: 1438.0, y: 179.0},  
+ {x: 1691.0, y: 120.0},  
+ {x: 1721.0, y: 120.0},  
+ {x: 1746.0, y: 120.0},  
+ {x: 1776.0, y: 120.0},  
+ {x: 2403.0, y: 151.0},  
+ {x: 2433.0, y: 151.0},  
+ {x: 2628.0, y: 120.0},  
+ {x: 2658.0, y: 120.0},  
+ {x: 2742.0, y: 120.0},  
+ {x: 2772.0, y: 120.0},  
+ {x: 3193.0, y: 352.0},  
+ {x: 3223.0, y: 352.0},  
+ {x: 3253.0, y: 352.0},  
+ {x: 3391.0, y: 151.0},  
+ {x: 3421.0, y: 151.0}  
+];
 
-
+let coins = [];
+let jump;
+let coinFX;
+let reset;
+let levelFinish;
 // Accessing modal and buttons
 const modal = document.getElementById('modal');
 const startButton = document.getElementById('startButton');
 const exitButton = document.getElementById('exitButton');
 modal.style.display = 'block';
+
+//preload music
+function preload() {
+  music = loadSound('ThemeMusic.mp3');
+  jump = loadSound('jump.mp3');  
+  coinFX = loadSound('coin.mp3');
+  reset = loadSound('reset.mp3')
+  levelFinish = loadSound('levelComplete.mp3')
+}
+
+
 
 // Event listener for the "Start Game" button
 startButton.addEventListener('click', function() {
@@ -24,6 +65,8 @@ startButton.addEventListener('click', function() {
     jumpForce = -8
    // Start the clock when the game begins
   startTime = millis();  // Store the start time when the game starts
+  music.play();  // Start playing music when the game starts
+  music.loop();  // Loop the music so it keeps playing
 });
 // Event listener for the "Exit" button
 exitButton.addEventListener('click', function() {
@@ -32,6 +75,8 @@ exitButton.addEventListener('click', function() {
     jumpForce = -12;
    // Start the clock when the game begins
   startTime = millis();  // Store the start time when the game starts
+  music.play();  // Start playing music when the game starts
+  music.loop();  // Loop the music so it keeps playing
 });
 
 
@@ -44,37 +89,60 @@ function setup() {
   // Build ground with variable platform and hole sizes
   let levelLength = 5000;
   let x = 0;
-  while (x < levelLength) {
-    let groundWidth = random(200, 400);
-    let holeWidth = random(60, 120);
-    groundSections.push(new Platform(x, height - 20, groundWidth, 20));
-    x += groundWidth + holeWidth;
-  }
+  // while (x < levelLength) {
+  //   let groundWidth = random(200, 400);
+  //   let holeWidth = random(60, 120);
+  //   groundSections.push(new Platform(x, height - 20, groundWidth, 20));
+  //   x += groundWidth + holeWidth;
+  // }
 
   // Floating platforms
-  platforms.push(new Platform(600, 280, 100, 10));
-  platforms.push(new Platform(1000, 240, 100, 10));
-  platforms.push(new Platform(1600, 200, 100, 10));
-  platforms.push(new Platform(2200, 160, 100, 10));
-  platforms.push(new Platform(3000, 300, 100, 10));
-  platforms.push(new Platform(3000, 300, 100, 10));
-
-  // Add moving platforms
-  platforms.push(new Platform(1500, 250, 100, 10, 2, 200));  // Moves horizontally with speed 2 and range 200px
-  platforms.push(new Platform(2500, 200, 100, 10, -2, 300)); // Moves horizontally with speed -2 and range 300px
+platforms.push(new Platform(488, 341, 128, 33));
+platforms.push(new Platform(-11, 370, 453, 33));
+platforms.push(new Platform(3644, 370, 1422, 33));
+platforms.push(new Platform(663, 256, 234, 33));
+platforms.push(new Platform(723, 142, 142, 33));
+platforms.push(new Platform(897, 341, 84, 33));
+platforms.push(new Platform(981, 231, 139, 33));
+platforms.push(new Platform(1120, 109, 203, 33));
+platforms.push(new Platform(1403, 374, 113, 33));
+platforms.push(new Platform(1662, 374, 140, 33));
+platforms.push(new Platform(1834, 374, 140, 33));
+platforms.push(new Platform(1974, 261, 82, 33));
+platforms.push(new Platform(2143, 175, 170, 26));
+platforms.push(new Platform(2936, 205, 227, 26));
+platforms.push(new Platform(2764, 315, 112, 26));
+platforms.push(new Platform(3193, 374, 81, 26));
+platforms.push(new Platform(3274, 261, 117, 26));
+platforms.push(new Platform(3446, 260, 117, 26));
+platforms.push(new Platform(3446, 260, 117, 26));
+platforms.push(new Platform(3901, 260, 168, 114));
+platforms.push(new Platform(3954, 201, 115, 59));
+platforms.push(new Platform(1686, 142, 116, 33));
+platforms.push(new Platform(1446, 175, 87, 12, 2, 120));
+platforms.push(new Platform(2425, 231, 87, 12, 2, 200));
+platforms.push(new Platform(2655, 261, 87, 12, 2, 200));
+platforms.push(new Platform(3697, 176, 87, 12, 1.5, 100));
+platforms.push(new Platform(4011, 145, 58, 59));
 
    // Add flying enemies
-  enemies.push(new FlyingEnemy(700, 150, 30, 30, 1, 100)); // FlyingEnemy flying up and down with speed 1 and range 100px
-  enemies.push(new FlyingEnemy(1400, 100, 30, 30, 2, 150)); // FlyingEnemy flying up and down with speed 2 and range 150px
-  enemies.push(new FlyingEnemy(2200, 50, 30, 30, 1.5, 120)); // FlyingEnemy flying up and down with speed 1.5 and range 120px
+  // enemies.push(new FlyingEnemy(2100, 70, 30, 30, 1.5, 80)); // FlyingEnemy flying up and down with speed 1.5 and range 80px
+  enemies.push(new FlyingEnemy(3230, 100, 30, 30, 1.5, 80)); // FlyingEnemy flying up and down with speed 1.5 and range 80px
 
   
   // Add crawling enemies
- enemies.push(new CrawlingEnemy(500, platforms[0].y - 20, 40, 20, 2, 300));  // Crawling enemy on platform 1 (y=280) adjusted to y=260
-  enemies.push(new CrawlingEnemy(2000, platforms[2].y - 20, 40, 20, 1, 200)); // Crawling enemy on platform 3 (y=200) adjusted to y=180
-  enemies.push(new CrawlingEnemy(3500, platforms[4].y - 20, 40, 20, 2, 400)); // Crawling enemy on platform 5 (y=300) adjusted to y=280
+enemies.push(new CrawlingEnemy(platforms[4].x + 50, platforms[4].y - 15, 40, 20, 1, 50));
+enemies.push(new CrawlingEnemy(platforms[7].x + 50, platforms[7].y - 15, 40, 20, 1, 25));
+enemies.push(new CrawlingEnemy(platforms[7].x + 140, platforms[7].y - 15, 40, 20, 1.5, 25));
+enemies.push(new CrawlingEnemy(platforms[12].x + 90, platforms[12].y - 15, 40, 20, 1, 40));
+enemies.push(new CrawlingEnemy(platforms[13].x + 90, platforms[13].y - 15, 40, 20, 1, 40)); 
+  enemies.push(new CrawlingEnemy(platforms[2].x + 50, platforms[2].y - 15, 40, 20, 1, 50));
+  
+    // Create coin objects
+  coins = coinPositions.map(pos => new Coin(pos.x, pos.y));
+  
   // End-of-level flag
-  flag = new Flag(x - 100, height - 100, 20, 80);
+  flag = new Flag(4299, height - 100, 20, 80);
 }
 
 function draw() {
@@ -114,6 +182,12 @@ function draw() {
     }
   }
 
+  //Update and Display Coins
+  for (let coin of coins) {
+    coin.show();
+    coin.collect(player);
+  }
+  
   if (keyIsDown(LEFT_ARROW) && !keyIsDown(RIGHT_ARROW)) {
     player.move(-1);
   } else if (keyIsDown(RIGHT_ARROW) && !keyIsDown(LEFT_ARROW)) {
@@ -128,6 +202,7 @@ function draw() {
   flag.show();
   if (flag.touches(player)) {
     levelCompleted = true; // Stop the clock when the player reaches the flag
+    levelFinish.play();
   }
 
   player.show();
@@ -136,11 +211,13 @@ function draw() {
   
   // Display the clock (time taken to complete the level)
   displayTimeTaken();
+
 }
 
 function keyPressed() {
   if (keyCode === 32 || keyCode === UP_ARROW) {
     player.jumpPressed = true;
+   
     player.jump();
   }
 }
@@ -176,6 +253,13 @@ class Player {
     this.y = 0;
     this.vx = 0;
     this.vy = 0;
+    coinsCollected = 0;
+      coins = [];
+    reset.play();
+   
+  for (let pos of coinPositions) {
+    coins.push(new Coin(pos.x, pos.y));
+  }
   }
 
   update() {
@@ -253,6 +337,7 @@ class Player {
     if (this.onGround) {
       this.vy = jumpForce;
       this.jumpHoldTime = 0;
+      jump.play();
     } else {
       this.jumpBufferTime = this.jumpBufferMax;
     }
@@ -384,8 +469,44 @@ class FlyingEnemy {
 
   // Show the enemy on screen
   show() {
+    push();
+    translate(this.x, this.y);
+  
+    // Wings (flap using sin wave)
+    let flap = sin(frameCount * 0.2) * PI / 6;
+    fill(200); // Light gray
+    noStroke();
+  
+    push();
+    rotate(flap);
+    ellipse(-this.w / 2 - 10, -this.h / 2, 15, 30); // Left wing
+    pop();
+  
+    push();
+    rotate(-flap);
+    ellipse(this.w / 2 + 10, -this.h / 2, 15, 30); // Right wing
+    pop();
+  
+    // Goomba body
     fill(255, 0, 0); // Red color for the enemy
-    ellipse(this.x, this.y, this.w, this.h); // Draw a circular enemy
+    ellipse(0, 0, this.w, this.h); 
+  
+    // Eyes
+    fill(255); // White
+    ellipse(-6, -6, 8, 8);  // Left eye
+    ellipse(6, -6, 8, 8);   // Right eye
+  
+    // Pupils
+    fill(0);
+    ellipse(-6, -6, 4, 4);  // Left pupil
+    ellipse(6, -6, 4, 4);   // Right pupil
+  
+    // Feet
+    fill(0); // Black
+    ellipse(-10, this.h / 2, 8, 8); // Left foot
+    ellipse(10, this.h / 2, 8, 8);  // Right foot
+  
+    pop();
   }
 
   // Check if the player touches the enemy
@@ -421,8 +542,30 @@ class CrawlingEnemy {
 
   // Show the crawling enemy on screen
   show() {
-    fill(255, 0, 0); // Red color for the enemy
-    rect(this.x, this.y, this.w, this.h); // Draw a rectangular enemy (crawling)
+    push();
+    translate(this.x, this.y);
+  
+    // Body: circular and orange-brown
+    fill(204, 102, 0); // Orange-brown
+    ellipse(0, 0, this.w, this.h); // Round body
+
+  
+    // Eyes
+    fill(255); // White
+    ellipse(-6, -6, 8, 8); // Left eye
+    ellipse(6, -6, 8, 8);  // Right eye
+  
+    // Pupils
+    fill(0);
+    ellipse(-6, -6, 4, 4); // Left pupil
+    ellipse(6, -6, 4, 4);  // Right pupil
+  
+    // Feet: stubby brownish feet
+    fill(100, 50, 0); // Darker brown
+    rect(-10, this.h / 2, 6, 4); // Left foot
+    rect(4, this.h / 2, 6, 4);  // Right foot
+  
+    pop();
   }
 
   // Check if the player touches the crawling enemy
@@ -433,6 +576,33 @@ class CrawlingEnemy {
       player.y < this.y + this.h &&
       player.y + player.h > this.y
     );
+  }
+}
+class Coin {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.size = 20;
+    this.collected = false;
+  }
+
+  show() {
+    if (!this.collected) {
+      fill(255, 223, 0); // gold color
+      ellipse(this.x, this.y, this.size);
+    }
+  }
+
+  collect(player) {
+    let d = dist(player.x, player.y, this.x, this.y);
+    if (d < this.size + player.w / 2) {
+      if (!this.collected) {
+        this.collected = true;
+        coinFX.play();  // Play the coin collection sound
+      }
+      
+    }
+    
   }
 }
 
@@ -446,9 +616,10 @@ function displayTimeTaken() {
   let minutes = floor(timeTaken / 60000); // Convert milliseconds to minutes
   let seconds = floor((timeTaken % 60000) / 1000); // Get remaining seconds
   let milliseconds = timeTaken % 1000;
-
+    coinsCollected = coins.filter(c => c.collected).length;
+    textAlign(RIGHT, TOP);
   // Display time in MM:SS format
-  text(`Time: ${nf(minutes, 2)}:${nf(seconds, 2)}`, width - 20, 20);
+  text(`Coins: ${coinsCollected} / ${coins.length} Time: ${nf(minutes, 2)}:${nf(seconds, 2)}`, width - 20, 20);
 }
 // Function to display the "Finished" screen after the player crosses the flag
 function displayFinishedScreen() {
@@ -464,6 +635,10 @@ function displayFinishedScreen() {
   let seconds = floor((timeTaken % 60000) / 1000); // Get remaining seconds
   textSize(32);
   text(`Time Taken: ${nf(minutes, 2)}:${nf(seconds, 2)}`, width / 2, height / 2 + 40);
+  
+    // Display the Coin Score
+  textSize(32);
+  text(`Coins: ${coinsCollected} / ${coins.length}`, width / 2, height / 2 + 40);
 
   // Display Restart or Exit options
   textSize(24);
@@ -481,6 +656,7 @@ function keyPressed() {
     enemies = []; // Reset enemies
     setup(); // Reinitialize the level
     modal.style.display = 'block'; // Show the modal when restarting the game
+    music.stop();
   }
 
     // Optionally, handle exit with 'Esc' key
