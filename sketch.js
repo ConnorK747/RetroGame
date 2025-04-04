@@ -9,6 +9,34 @@ let enemies = [];
 let startTime;
 let timeTaken = 0;  // Time taken to complete the level (in milliseconds)
 let levelCompleted = false; // To track if the level is completed
+let coinsCollected
+let coinPositions = [
+ {x: 758.0,  y: 120.0},  
+ {x: 783.0,  y: 120.0},  
+ {x: 808.0,  y: 120.0},  
+ {x: 1040.0, y: 68.0},  
+ {x: 1065.0, y: 68.0}, 
+ {x: 928.0,  y: 319.0},  
+ {x: 1403.0, y: 179.0},  
+ {x: 1438.0, y: 179.0},  
+ {x: 1691.0, y: 120.0},  
+ {x: 1721.0, y: 120.0},  
+ {x: 1746.0, y: 120.0},  
+ {x: 1776.0, y: 120.0},  
+ {x: 2403.0, y: 151.0},  
+ {x: 2433.0, y: 151.0},  
+ {x: 2628.0, y: 120.0},  
+ {x: 2658.0, y: 120.0},  
+ {x: 2742.0, y: 120.0},  
+ {x: 2772.0, y: 120.0},  
+ {x: 3193.0, y: 352.0},  
+ {x: 3223.0, y: 352.0},  
+ {x: 3253.0, y: 352.0},  
+ {x: 3391.0, y: 151.0},  
+ {x: 3421.0, y: 151.0}  
+];
+
+let coins = [];
 
 
 // Accessing modal and buttons
@@ -86,13 +114,15 @@ platforms.push(new Platform(4011, 145, 58, 59));
 
   
   // Add crawling enemies
-// enemies.push(new CrawlingEnemy(platforms[4].x + 50, platforms[4].y - 20, 40, 20, 1, 50));
-// enemies.push(new CrawlingEnemy(platforms[7].x + 50, platforms[7].y - 20, 40, 20, 1, 25));
-// enemies.push(new CrawlingEnemy(platforms[7].x + 140, platforms[7].y - 20, 40, 20, 1.5, 25));
-// enemies.push(new CrawlingEnemy(platforms[12].x + 90, platforms[12].y - 20, 40, 20, 1, 40));
+enemies.push(new CrawlingEnemy(platforms[4].x + 50, platforms[4].y - 20, 40, 20, 1, 50));
+enemies.push(new CrawlingEnemy(platforms[7].x + 50, platforms[7].y - 20, 40, 20, 1, 25));
+enemies.push(new CrawlingEnemy(platforms[7].x + 140, platforms[7].y - 20, 40, 20, 1.5, 25));
+enemies.push(new CrawlingEnemy(platforms[12].x + 90, platforms[12].y - 20, 40, 20, 1, 40));
 enemies.push(new CrawlingEnemy(platforms[13].x + 90, platforms[13].y - 20, 40, 20, 1, 40)); 
   enemies.push(new CrawlingEnemy(platforms[2].x + 50, platforms[2].y - 20, 40, 20, 1, 50));
   
+    // Create coin objects
+  coins = coinPositions.map(pos => new Coin(pos.x, pos.y));
   
   // End-of-level flag
   flag = new Flag(4299, height - 100, 20, 80);
@@ -135,6 +165,12 @@ function draw() {
     }
   }
 
+  //Update and Display Coins
+  for (let coin of coins) {
+    coin.show();
+    coin.collect(player);
+  }
+  
   if (keyIsDown(LEFT_ARROW) && !keyIsDown(RIGHT_ARROW)) {
     player.move(-1);
   } else if (keyIsDown(RIGHT_ARROW) && !keyIsDown(LEFT_ARROW)) {
@@ -157,6 +193,7 @@ function draw() {
   
   // Display the clock (time taken to complete the level)
   displayTimeTaken();
+
 }
 
 function keyPressed() {
@@ -197,6 +234,11 @@ class Player {
     this.y = 0;
     this.vx = 0;
     this.vy = 0;
+    coinsCollected = 0;
+      coins = [];
+  for (let pos of coinPositions) {
+    coins.push(new Coin(pos.x, pos.y));
+  }
   }
 
   update() {
@@ -456,6 +498,28 @@ class CrawlingEnemy {
     );
   }
 }
+class Coin {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.size = 20;
+    this.collected = false;
+  }
+
+  show() {
+    if (!this.collected) {
+      fill(255, 223, 0); // gold color
+      ellipse(this.x, this.y, this.size);
+    }
+  }
+
+  collect(player) {
+    let d = dist(player.x, player.y, this.x, this.y);
+    if (d < this.size + player.w / 2) {
+      this.collected = true;
+    }
+  }
+}
 
 // Function to display the time taken to complete the level
 function displayTimeTaken() {
@@ -467,9 +531,10 @@ function displayTimeTaken() {
   let minutes = floor(timeTaken / 60000); // Convert milliseconds to minutes
   let seconds = floor((timeTaken % 60000) / 1000); // Get remaining seconds
   let milliseconds = timeTaken % 1000;
-
+    coinsCollected = coins.filter(c => c.collected).length;
+    textAlign(RIGHT, TOP);
   // Display time in MM:SS format
-  text(`Time: ${nf(minutes, 2)}:${nf(seconds, 2)}`, width - 20, 20);
+  text(`Coins: ${coinsCollected} / ${coins.length} Time: ${nf(minutes, 2)}:${nf(seconds, 2)}`, width - 20, 20);
 }
 // Function to display the "Finished" screen after the player crosses the flag
 function displayFinishedScreen() {
@@ -485,6 +550,10 @@ function displayFinishedScreen() {
   let seconds = floor((timeTaken % 60000) / 1000); // Get remaining seconds
   textSize(32);
   text(`Time Taken: ${nf(minutes, 2)}:${nf(seconds, 2)}`, width / 2, height / 2 + 40);
+  
+    // Display the Coin Score
+  textSize(32);
+  text(`Coins: ${coinsCollected} / ${coins.length}`, width / 2, height / 2 + 40);
 
   // Display Restart or Exit options
   textSize(24);
