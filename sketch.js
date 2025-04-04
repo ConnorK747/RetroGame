@@ -202,6 +202,7 @@ function draw() {
   flag.show();
   if (flag.touches(player)) {
     levelCompleted = true; // Stop the clock when the player reaches the flag
+    music.stop();
     levelFinish.play();
   }
 
