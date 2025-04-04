@@ -74,30 +74,28 @@ platforms.push(new Platform(3446, 260, 117, 26));
 platforms.push(new Platform(3901, 260, 168, 114));
 platforms.push(new Platform(3954, 201, 115, 59));
 platforms.push(new Platform(1686, 142, 116, 33));
-platforms.push(new Platform(1546, 175, 87, 12));
-platforms.push(new Platform(2425, 231, 87, 12));
-platforms.push(new Platform(2655, 261, 87, 12));
-platforms.push(new Platform(3697, 176, 87, 12));
+platforms.push(new Platform(1446, 175, 87, 12, 2, 120));
+platforms.push(new Platform(2425, 231, 87, 12, 2, 200));
+platforms.push(new Platform(2655, 261, 87, 12, 2, 200));
+platforms.push(new Platform(3697, 176, 87, 12, 1.5, 100));
 platforms.push(new Platform(4011, 145, 58, 59));
-platforms.push(new Platform(4299, 72, 19, 304));
-
-
-  // Add moving platforms
-  platforms.push(new Platform(1500, 250, 100, 10, 2, 200));  // Moves horizontally with speed 2 and range 200px
-  platforms.push(new Platform(2500, 200, 100, 10, -2, 300)); // Moves horizontally with speed -2 and range 300px
 
    // Add flying enemies
-  enemies.push(new FlyingEnemy(700, 150, 30, 30, 1, 100)); // FlyingEnemy flying up and down with speed 1 and range 100px
-  enemies.push(new FlyingEnemy(1400, 100, 30, 30, 2, 150)); // FlyingEnemy flying up and down with speed 2 and range 150px
-  enemies.push(new FlyingEnemy(2200, 50, 30, 30, 1.5, 120)); // FlyingEnemy flying up and down with speed 1.5 and range 120px
+  // enemies.push(new FlyingEnemy(2100, 70, 30, 30, 1.5, 80)); // FlyingEnemy flying up and down with speed 1.5 and range 80px
+  enemies.push(new FlyingEnemy(3230, 100, 30, 30, 1.5, 80)); // FlyingEnemy flying up and down with speed 1.5 and range 80px
 
   
   // Add crawling enemies
- enemies.push(new CrawlingEnemy(500, platforms[0].y - 20, 40, 20, 2, 300));  // Crawling enemy on platform 1 (y=280) adjusted to y=260
-  enemies.push(new CrawlingEnemy(2000, platforms[2].y - 20, 40, 20, 1, 200)); // Crawling enemy on platform 3 (y=200) adjusted to y=180
-  enemies.push(new CrawlingEnemy(3500, platforms[4].y - 20, 40, 20, 2, 400)); // Crawling enemy on platform 5 (y=300) adjusted to y=280
+// enemies.push(new CrawlingEnemy(platforms[4].x + 50, platforms[4].y - 20, 40, 20, 1, 50));
+// enemies.push(new CrawlingEnemy(platforms[7].x + 50, platforms[7].y - 20, 40, 20, 1, 25));
+// enemies.push(new CrawlingEnemy(platforms[7].x + 140, platforms[7].y - 20, 40, 20, 1.5, 25));
+// enemies.push(new CrawlingEnemy(platforms[12].x + 90, platforms[12].y - 20, 40, 20, 1, 40));
+enemies.push(new CrawlingEnemy(platforms[13].x + 90, platforms[13].y - 20, 40, 20, 1, 40)); 
+  enemies.push(new CrawlingEnemy(platforms[2].x + 50, platforms[2].y - 20, 40, 20, 1, 50));
+  
+  
   // End-of-level flag
-  flag = new Flag(x - 100, height - 100, 20, 80);
+  flag = new Flag(4299, height - 100, 20, 80);
 }
 
 function draw() {
