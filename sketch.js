@@ -49,7 +49,7 @@ modal.style.display = 'block';
 
 //preload music
 function preload() {
-  music = loadSound('ThemeMusic.mp3');
+  //music = loadSound('ThemeMusic.mp3');
   jump = loadSound('jump.mp3');  
   coinFX = loadSound('coin.mp3');
   reset = loadSound('reset.mp3')
@@ -97,19 +97,19 @@ function setup() {
   // }
 
   // Floating platforms
-platforms.push(new Platform(488, 341, 128, 33));
+platforms.push(new Platform(488, 341, 128, 33, 0, 0, true));
 platforms.push(new Platform(-11, 370, 453, 33));
 platforms.push(new Platform(3644, 370, 1422, 33));
 platforms.push(new Platform(663, 256, 234, 33));
-platforms.push(new Platform(723, 142, 142, 33));
+platforms.push(new Platform(723, 142, 142, 33, 0, 0, true)); // Bounce pad
 platforms.push(new Platform(897, 341, 84, 33));
 platforms.push(new Platform(981, 231, 139, 33));
-platforms.push(new Platform(1120, 109, 203, 33));
+platforms.push(new Platform(1120, 109, 203, 33)); // Bounce pad
 platforms.push(new Platform(1403, 374, 113, 33));
 platforms.push(new Platform(1662, 374, 140, 33));
 platforms.push(new Platform(1834, 374, 140, 33));
 platforms.push(new Platform(1974, 261, 82, 33));
-platforms.push(new Platform(2143, 175, 170, 26));
+platforms.push(new Platform(2143, 175, 170, 26, 0, 0, true)); // Bounce pad
 platforms.push(new Platform(2936, 205, 227, 26));
 platforms.push(new Platform(2764, 315, 112, 26));
 platforms.push(new Platform(3193, 374, 81, 26));
@@ -119,9 +119,9 @@ platforms.push(new Platform(3446, 260, 117, 26));
 platforms.push(new Platform(3901, 260, 168, 114));
 platforms.push(new Platform(3954, 201, 115, 59));
 platforms.push(new Platform(1686, 142, 116, 33));
-platforms.push(new Platform(1446, 175, 87, 12, 2, 120));
-platforms.push(new Platform(2425, 231, 87, 12, 2, 200));
-platforms.push(new Platform(2655, 261, 87, 12, 2, 200));
+platforms.push(new Platform(1446, 175, 87, 12, 2, 120, true));
+platforms.push(new Platform(2425, 231, 87, 12, 2, 200, true));
+platforms.push(new Platform(2655, 261, 87, 12, 2, 200, true));
 platforms.push(new Platform(3697, 176, 87, 12, 1.5, 100));
 platforms.push(new Platform(4011, 145, 58, 59));
 
@@ -320,7 +320,14 @@ class Player {
 
         if (minOverlap === overlapTop) {
           this.y = plat.y - this.h;
-          this.vy = 0;
+
+          if (plat.isBouncePad) {
+            this.vy = jumpForce * 1.5; // Launch player upward more strongly
+            jump.play(); // Optional: bounce sound effect
+          } else {
+            this.vy = 0;
+          }
+
 
           if (!this.onGround && this.jumpBufferTime > 0) {
             this.vy = jumpForce;
@@ -414,15 +421,16 @@ class Player {
 
 
 class Platform {
-  constructor(x, y, w, h, moveSpeed = 0, moveRange = 0) {
+  constructor(x, y, w, h, moveSpeed = 0, moveRange = 0, isBouncePad = false) {
     this.x = x;
     this.y = y;
     this.w = w;
     this.h = h;
-    this.moveSpeed = moveSpeed;  // Speed at which the platform moves
-    this.moveRange = moveRange;  // How far the platform can move
-    this.originalX = x;  // Keep track of the original position
-    this.direction = 1;  // 1 for right, -1 for left
+    this.moveSpeed = moveSpeed;
+    this.moveRange = moveRange;
+    this.originalX = x;
+    this.direction = 1;
+    this.isBouncePad = isBouncePad;
   }
   // Update the platform's position if it moves
   update() {
@@ -441,10 +449,15 @@ class Platform {
       }
     }
   }
-  show() {
-    fill(0, 200, 0);
-    rect(this.x, this.y, this.w, this.h);
-  }
+    show() {
+      if (this.isBouncePad) {
+        fill(255, 100, 100); // Bright reddish color for bounce pads
+      } else {
+        fill(0, 200, 0);
+      }
+      rect(this.x, this.y, this.w, this.h);
+    }
+
 }
 
 class Flag {
