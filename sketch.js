@@ -1,5 +1,5 @@
 let player;
-let gravity = 0.8;
+let gravity = 0.5;
 let jumpForce = -12;
 let platforms = [];
 let cameraX = 0;
@@ -61,7 +61,7 @@ function preload() {
 // Event listener for the "Start Game" button
 startButton.addEventListener('click', function() {
     modal.style.display = 'none';
-    gravity = 0.8
+    gravity = 0.5
     jumpForce = -8
    // Start the clock when the game begins
   startTime = millis();  // Store the start time when the game starts
@@ -71,7 +71,7 @@ startButton.addEventListener('click', function() {
 // Event listener for the "Exit" button
 exitButton.addEventListener('click', function() {
     modal.style.display = 'none';
-    gravity = 0.8;
+    gravity = 0.5;
     jumpForce = -12;
    // Start the clock when the game begins
   startTime = millis();  // Store the start time when the game starts
@@ -233,6 +233,15 @@ function keyReleased() {
 
 class Player {
   constructor() {
+    this.vx = 0;
+
+    this.friction = 0.9;  // Slipperiness: lower = more slippery
+    this.stopped = false;  // Track when keys are released
+
+    this.boosted = false;
+    this.boostTimer = 0;
+    this.boostDuration = 3000; // 3 seconds
+
     this.w = 30;
     this.h = 30;
     this.reset();
@@ -264,6 +273,12 @@ class Player {
   }
 
   update() {
+    if (this.boosted && millis() > this.boostTimer) {
+      this.speed = 5;
+      jumpForce = -12;
+      this.boosted = false;
+    }
+
     this.frameCounter++;
 
     if (this.jumpPressed && this.vy < 0 && this.jumpHoldTime < this.jumpHoldMax) {
@@ -331,7 +346,8 @@ class Player {
   }
 
   stop() {
-    this.vx = 0;
+      this.vx *= this.friction;
+      if (abs(this.vx) < 0.1) this.vx = 0; // Snap to 0 when almost stopped
   }
 
   jump() {
@@ -410,6 +426,14 @@ class Platform {
   }
   // Update the platform's position if it moves
   update() {
+    if (this.stopped) {
+      this.vx *= this.friction;
+      if (abs(this.vx) < 0.1) {
+        this.vx = 0;
+        this.stopped = false;
+      }
+    }
+
     if (this.moveSpeed !== 0) {
       this.x += this.moveSpeed * this.direction;
       if (this.x >= this.originalX + this.moveRange || this.x <= this.originalX - this.moveRange) {
@@ -600,6 +624,10 @@ class Coin {
       if (!this.collected) {
         this.collected = true;
         coinFX.play();  // Play the coin collection sound
+        player.speed = 8;
+        jumpForce = -16;
+        player.boosted = true;
+        player.boostTimer = millis() + player.boostDuration;
       }
       
     }
