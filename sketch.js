@@ -49,7 +49,7 @@ modal.style.display = 'block';
 
 //preload music
 function preload() {
-  //music = loadSound('ThemeMusic.mp3');
+  music = loadSound('ThemeMusic.mp3');
   jump = loadSound('jump.mp3');  
   coinFX = loadSound('coin.mp3');
   reset = loadSound('reset.mp3')
