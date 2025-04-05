@@ -1,4 +1,5 @@
 let player;
+let music;
 let gravity = 0.5;
 let jumpForce = -12;
 let platforms = [];
