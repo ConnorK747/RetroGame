@@ -66,7 +66,7 @@ startButton.addEventListener('click', function() {
     jumpForce = -8
    // Start the clock when the game begins
   startTime = millis();  // Store the start time when the game starts
- // music.play();  // Start playing music when the game starts
+  music.play();  // Start playing music when the game starts
   music.loop();  // Loop the music so it keeps playing
 });
 // Event listener for the "Exit" button
@@ -76,7 +76,7 @@ exitButton.addEventListener('click', function() {
     jumpForce = -12;
    // Start the clock when the game begins
   startTime = millis();  // Store the start time when the game starts
-//  music.play();  // Start playing music when the game starts
+  music.play();  // Start playing music when the game starts
   music.loop();  // Loop the music so it keeps playing
 });
 
