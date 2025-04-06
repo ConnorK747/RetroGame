@@ -138,12 +138,12 @@ function draw() {
   displayTimeTaken();
 }
 
-function keyPressed() {
-  if (keyCode === 32 || keyCode === UP_ARROW) {
-    player.jumpPressed = true;
-    player.jump();
-  }
-}
+// function keyPressed() {
+//   if (keyCode === 32 || keyCode === UP_ARROW) {
+//     player.jumpPressed = true;
+//     player.jump();
+//   }
+// }
 
 function keyReleased() {
   if (keyCode === 32 || keyCode === UP_ARROW) {
