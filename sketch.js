@@ -631,15 +631,12 @@ function displayFinishedScreen() {
   // Display "Level Finished" message
   text("Level Finished!", width / 2, height / 2 - 40);
 
-  // Display the time taken
+  // Display the time taken and coins collected
   let minutes = floor(timeTaken / 60000); // Convert milliseconds to minutes
   let seconds = floor((timeTaken % 60000) / 1000); // Get remaining seconds
   textSize(32);
-  text(`Time Taken: ${nf(minutes, 2)}:${nf(seconds, 2)}`, width / 2, height / 2 + 40);
+  text(`Coins: ${coinsCollected} / ${coins.length} Time Taken: ${nf(minutes, 2)}:${nf(seconds, 2)}`, width / 2, height / 2 + 40);
   
-    // Display the Coin Score
-  textSize(32);
-  text(`Coins: ${coinsCollected} / ${coins.length}`, width / 2, height / 2 + 40);
 
   // Display Restart or Exit options
   textSize(24);
